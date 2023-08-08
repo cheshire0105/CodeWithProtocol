@@ -27,7 +27,7 @@ struct SecondViewController_PreViews: PreviewProvider {
 class SecondViewController: UIViewController {
     
     // 첫번째 뷰에서 전송한 텍스트를 두번째 뷰에서 받아서 저장할 저장 공간.
-    var receivedText: String?
+    var receivedText: String? = "임시 텍스트"
     
     // tableView를 클래스의 속성으로 만듭니다.
     let tableView = MyTableView()

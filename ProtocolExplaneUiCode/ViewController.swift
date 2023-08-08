@@ -77,7 +77,7 @@ class ViewController: UIViewController {
     var inputText: String?
     
     // 줘야 하는 곳에서 프로토콜 프로퍼티를 생성 합니다.
-    // 데이터를 받는 곳에서 프로토콜을 채택 했는지 확인 하는 작업이라고 생각 하면 편합니다.
+    // "편지를 전달해줄 대리인(델리게이트)를 찾아!"
     weak var detaDelegate : TabDelegate?
     
     
@@ -145,13 +145,15 @@ class ViewController: UIViewController {
         let secondVC = SecondViewController()
         
         // 위에서 생성한 프로퍼티를 세컨드 뷰에 위임 합니다.
-        // 데이터를 처리 할 수 있는 역할을 두번쨰 뷰에게 위임 하는 것이다.
-        // "야 이제 너가 데이터를 처리해, 난 그냥 주는 역할만 하는거야"
+        // 데이터를 처리 할 수 있는 역할을 두번째 뷰에게 위임 하는 것이다.
+        // "SecondViewController 너가 그 대리인이 될래? 내가 전달해야 할 편지가 있거든."
+        // SecondViewController를 대리인으로 지정합니다.
         self.detaDelegate = secondVC
         
         // 이제 두번째 뷰로 정보를 전달 할 수 있습니다. 함수를 통해서 말이죠.
         // 여기서 작성된 텍스트 필드의 값을 위의 프로토콜 메서드의 파라미터로 보냅니다.
         // 이러면 tabAction의 함수의 파라미터 string이 텍스트필드에서 적은 텍스트가 됩니다.
+        // "대리인(델리게이트)아, 이 편지를 받아서 원하는 대로 처리해줘!"
         if let text = textField.text {
             detaDelegate?.tabAction(value: text)
         }
