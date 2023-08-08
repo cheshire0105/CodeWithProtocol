@@ -37,6 +37,9 @@ class SecondViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.delegate = self
+        
+        
         // UserDefaults에서 데이터 불러오기
         receivedText = UserDefaults.standard.array(forKey: "texts") as? [String] ?? ["임시 텍스트"]
         print("received\(receivedText)")
@@ -86,7 +89,7 @@ extension SecondViewController:  TabDelegate {
         // 받아온 데이터를 앞서 생성한 변수에 담아 둡니다.
         receivedText.append(value)
         
-     
+        
     }
 }
 
@@ -114,3 +117,20 @@ extension SecondViewController: UITableViewDataSource {
         return cell
     }
 }
+
+extension SecondViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true // 모든 셀을 편집 가능하게 지정
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete { // 편집 스타일이 삭제인 경우
+            receivedText.remove(at: indexPath.row) // 데이터 배열에서 해당 인덱스의 항목을 삭제
+            // UserDefaults를 업데이트
+            UserDefaults.standard.set(receivedText, forKey: "texts")
+            tableView.deleteRows(at: [indexPath], with: .fade) // 테이블 뷰에서 해당 셀을 삭제
+            print(receivedText)
+        }
+    }
+}
+
