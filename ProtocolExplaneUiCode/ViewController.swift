@@ -153,7 +153,7 @@ class ViewController: UIViewController {
         // 이제 두번째 뷰로 정보를 전달 할 수 있습니다. 함수를 통해서 말이죠.
         // 여기서 작성된 텍스트 필드의 값을 위의 프로토콜 메서드의 파라미터로 보냅니다.
         // 이러면 tabAction의 함수의 파라미터 string이 텍스트필드에서 적은 텍스트가 됩니다.
-        // "대리인(델리게이트)아, 이 편지를 받아서 원하는 대로 처리해줘!"
+        // "대리인(델리게이트)아, 이 편지(text)를 가져가서 원하는 대로 처리해줘!"
         if let text = textField.text {
             detaDelegate?.tabAction(value: text)
         }
