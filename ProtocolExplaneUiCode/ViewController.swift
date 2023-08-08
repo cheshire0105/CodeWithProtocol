@@ -46,37 +46,40 @@ extension UIViewController {
 }
 #endif
 
+#if DEBUG
+// UIViewController의 SwiftUI Preview를 제공하는 구조체입니다.
+struct ViewController_PreViews: PreviewProvider {
+    static var previews: some View {
+        ViewController().toNavigationPreview()
+        
+    }
+    
+}
+#endif
+
 
 
 
 
 // MARK: - 프로토콜로 데이터를 주고 받을 수 있게 하나 생성
 // TabDelegate 프로토콜은 데이터를 전달하는 데 사용됩니다.
+// 데이터를 줘야 하는 곳에서 생성 합니다.
 protocol TabDelegate : AnyObject {
     func tabAction(value: String)
 }
-
 
 
 class ViewController: UIViewController {
     
     // 프로퍼티로 textField를 선언합니다.
     var textField: MyTextField!
-    // 프로토콜 확인 변수
-    weak var detaDelegate : TabDelegate?
     // 텍스트 필드 데이터를 저장할 변수 생성
     var inputText: String?
     
+    // 줘야 하는 곳에서 프로토콜 프로퍼티를 생성 합니다.
+    // 데이터를 받는 곳에서 프로토콜을 채택 했는지 확인 하는 작업이라고 생각 하면 편합니다.
+    weak var detaDelegate : TabDelegate?
     
-    
-    // UIViewController의 SwiftUI Preview를 제공하는 구조체입니다.
-    struct ViewController_PreViews: PreviewProvider {
-        static var previews: some View {
-            ViewController().toNavigationPreview()
-            
-        }
-        
-    }
     
     // 스토리보드를 사용하여 UIViewController의 SwiftUI Preview를 제공하는 구조체입니다.
     /*
@@ -134,16 +137,28 @@ class ViewController: UIViewController {
         mainButton.addTarget(self, action: #selector(movePage), for: .touchUpInside)
     }
     
+    // 버튼이 눌렸을 때 실행 되는 함수 입니다.
     @objc func movePage() {
+        // 추가로 알게 된 것 : present(secondVC, animated: true, completion: nil) 이건 네비게이션 바가 없을 때 밑에서 위로 올라오는 화면. 전체 화면으로 화면이 넘어가게 하려면 네비게이션 컨트롤러를 추가 해야 합니다.
+        
+        // 버튼이 눌리면 SecondView 객체를 생성합니다. 지금 firstClass에서 secondClass를 제어 하기 위함 입니다.
         let secondVC = SecondViewController()
-        // present(secondVC, animated: true, completion: nil) 이건 네비게이션 바가 없을 때 밑에서 위로 올라오는 화면. 전체 화면으로 화면이 넘어가게 하려면 네비게이션 컨트롤러를 추가 해야 한다.
-        inputText = textField.text // 텍스트 필드에서 값을 가져와 저장
-        secondVC.receivedText = inputText // 값을 SecondViewController로 전달
-        print("버튼이 눌렸음")
-        // 텍스트 필드에서 값을 가져와 UserDefaults에 저장
+        
+        // 위에서 생성한 프로퍼티를 세컨드 뷰에 위임 합니다.
+        // 데이터를 처리 할 수 있는 역할을 두번쨰 뷰에게 위임 하는 것이다.
+        // "야 이제 너가 데이터를 처리해, 난 그냥 주는 역할만 하는거야"
+        self.detaDelegate = secondVC
+        
+        // 이제 두번째 뷰로 정보를 전달 할 수 있습니다. 함수를 통해서 말이죠.
+        // 여기서 작성된 텍스트 필드의 값을 위의 프로토콜 메서드의 파라미터로 보냅니다.
+        // 이러면 tabAction의 함수의 파라미터 string이 텍스트필드에서 적은 텍스트가 됩니다.
         if let text = textField.text {
-            UserDefaults.standard.set(text, forKey: "savedText")
+            detaDelegate?.tabAction(value: text)
         }
+        
+        // 네비게이션 컨트롤러를 사용해서 세컨드 뷰를 띄웁니다.
+        // 코드로 구현 했기 때문에 네비게이션 컨트롤러는 앱 델리게이트에 있습니다.
+        // 앱이 실행 되면 네비게이션 컨트롤러 부터 띄우면서 작업이 시작 되는 것입니다.
         navigationController?.show(secondVC, sender: self)
         
     }

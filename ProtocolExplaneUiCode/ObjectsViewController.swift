@@ -166,9 +166,7 @@ struct UIViewPreview<View: UIView>: UIViewRepresentable {
 
 // MARK: 두 미리보기 객체의 쉬운 비유
 /*
- 
- 물론입니다! 두 구조체의 역할을 간단하고 명확하게 다시 설명해 보겠습니다.
- 
+  
  1. `UIViewPreview`:
  - 역할: UIKit의 `UIView` 객체를 SwiftUI 환경에서 볼 수 있게 해주는 "다리" 역할을 합니다.
  - 이것 없이는 SwiftUI 프리뷰에서 UIKit 뷰를 직접 보는 것은 불가능합니다.
