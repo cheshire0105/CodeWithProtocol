@@ -73,8 +73,6 @@ class ViewController: UIViewController {
     
     // 프로퍼티로 textField를 선언합니다.
     var textField: MyTextField!
-    // 텍스트 필드 데이터를 저장할 변수 생성
-    var inputText: String?
     
     // 줘야 하는 곳에서 프로토콜 프로퍼티를 생성 합니다.
     // "편지를 전달해줄 대리인(델리게이트)를 찾아!"
@@ -90,14 +88,17 @@ class ViewController: UIViewController {
      }
      */
     
-    
+    // 뷰가 생성 되기 전에 텍스트 필드를 공백으로 만들어서 새로운 값을 받아올 준비를 합니다.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        textField.text = ""
+    }
     
     
     
     // 뷰가 로드되었을 때의 동작을 정의합니다.
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         
         
@@ -156,6 +157,16 @@ class ViewController: UIViewController {
         // "대리인(델리게이트)아, 이 편지(text)를 가져가서 원하는 대로 처리해줘!"
         if let text = textField.text {
             detaDelegate?.tabAction(value: text)
+            
+            // UserDefault에 저장 하는 방법 입니다.
+            // 새로운 저장공간을 만들어주고 그 저장 공간에 텍스트를 추가 해줍니다.
+            var storedText = UserDefaults.standard.array(forKey: "texts") as? [String] ?? []
+            storedText.append(text)
+            UserDefaults.standard.setValue(storedText, forKey: "texts")
+            print("storedText\(storedText)")
+            
+            
+            
         }
         
         // 네비게이션 컨트롤러를 사용해서 세컨드 뷰를 띄웁니다.

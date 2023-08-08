@@ -28,7 +28,7 @@ struct SecondViewController_PreViews: PreviewProvider {
 class SecondViewController: UIViewController {
     
     // 첫번째 뷰에서 전송한 텍스트를 두번째 뷰에서 받아서 저장할 저장 공간.
-    var receivedText: String? = "임시 텍스트"
+    var receivedText: [String] = ["임시 텍스트"]
     
     // tableView를 클래스의 속성으로 만듭니다.
     let tableView = MyTableView()
@@ -36,6 +36,10 @@ class SecondViewController: UIViewController {
     // 뷰가 로드 될 때 테이블 뷰를 생성 합니다.
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // UserDefaults에서 데이터 불러오기
+        receivedText = UserDefaults.standard.array(forKey: "texts") as? [String] ?? ["임시 텍스트"]
+        print("received\(receivedText)")
         
         // 셀을 등록합니다.
         // 셀은 아래의 필수 메서드로 구현 됩니다.
@@ -80,7 +84,9 @@ extension SecondViewController:  TabDelegate {
         print("\(value) 데이터를 받았다.")
         
         // 받아온 데이터를 앞서 생성한 변수에 담아 둡니다.
-        receivedText = value
+        receivedText.append(value)
+        
+     
     }
 }
 
@@ -91,7 +97,7 @@ extension SecondViewController: UITableViewDataSource {
     
     // 셀을 몇개를 보여줄 지 정하는 함수 입니다.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return receivedText != nil ? 1 : 0 // 텍스트가 있으면 1, 없으면 0
+        return receivedText.count
     }
     
     // 각각의 테이블 뷰를 어떻게 구성 할 건지 정하는 함수 입니다.
@@ -104,7 +110,7 @@ extension SecondViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
         // 셀의 레이블을 앞서 받아온 텍스트를 이용해서 보여줍니다.
-        cell.textLabel?.text = receivedText
+        cell.textLabel?.text = receivedText[indexPath.row]
         return cell
     }
 }
