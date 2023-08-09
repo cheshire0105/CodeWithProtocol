@@ -138,7 +138,7 @@ extension SecondViewController: UITableViewDelegate {
             // UserDefaults를 업데이트
             UserDefaults.standard.set(textsFromUserDefaults, forKey: "texts")
             tableView.deleteRows(at: [indexPath], with: .fade) // 테이블 뷰에서 해당 셀을 삭제
-            print("\(textsFromUserDefaults) 삭제 후 데이터.")
+            print("삭제된 후 데이터 배열 입니다. \(textsFromUserDefaults)")
         }
     }
 }
