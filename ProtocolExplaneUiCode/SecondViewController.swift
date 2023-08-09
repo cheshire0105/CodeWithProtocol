@@ -25,10 +25,11 @@ struct SecondViewController_PreViews: PreviewProvider {
 #endif
 
 
-class SecondViewController: UIViewController {
+class SecondViewController: UIViewController{
     
-    // 첫번째 뷰에서 전송한 텍스트를 두번째 뷰에서 받아서 저장할 저장 공간.
-    var receivedText: [String] = ["임시 텍스트"]
+    
+    // UserDefaults로 받아온 값을 저장할 새로운 저장 공간 생성합니다.
+    var textsFromUserDefaults = UserDefaults.standard.array(forKey: "texts") as? [String] ?? ["임시 텍스트"]
     
     // tableView를 클래스의 속성으로 만듭니다.
     let tableView = MyTableView()
@@ -38,11 +39,6 @@ class SecondViewController: UIViewController {
         super.viewDidLoad()
         
         tableView.delegate = self
-        
-        
-        // UserDefaults에서 데이터 불러오기
-        receivedText = UserDefaults.standard.array(forKey: "texts") as? [String] ?? ["임시 텍스트"]
-        print("received\(receivedText)")
         
         // 셀을 등록합니다.
         // 셀은 아래의 필수 메서드로 구현 됩니다.
@@ -86,8 +82,21 @@ extension SecondViewController:  TabDelegate {
     func tabAction(value: String) {
         print("\(value) 데이터를 받았다.")
         
-        // 받아온 데이터를 앞서 생성한 변수에 담아 둡니다.
-        receivedText.append(value)
+        // 앞에서 전달만 한 데이터를 실질적으로 사용 하는 단계입니다.
+        // 위에서 tabAction의 함수가 그 함수가 될 수 있겠습니다.
+        // (value : String)에 뷰컨트롤러의 텍스트필드의 텍스트가 들어갑니다.
+        // 여기선 그 값을 이용해서 구체적으로 어떤 동작을 할지 정하는 것입니다.
+        
+        // 앞서 만든 저장 공간에 값을 추가 합니다.
+        // 로컬 배열 업데이트 (테이블뷰 갱신을 위해)
+        // 앞에서 받아온 값을 추가 합니다. 이 동작은 프로토콜을 채택했기 떄문에 가능 합니다.
+        textsFromUserDefaults.append(value)
+        
+        // UserDefaults에 업데이트 합니다.
+        UserDefaults.standard.setValue(textsFromUserDefaults, forKey: "texts")
+        
+        print("저장된 데이터 배열 입니다. \(textsFromUserDefaults)")
+        
         
         
     }
@@ -100,7 +109,7 @@ extension SecondViewController: UITableViewDataSource {
     
     // 셀을 몇개를 보여줄 지 정하는 함수 입니다.
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return receivedText.count
+        return textsFromUserDefaults.count
     }
     
     // 각각의 테이블 뷰를 어떻게 구성 할 건지 정하는 함수 입니다.
@@ -113,7 +122,7 @@ extension SecondViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
         // 셀의 레이블을 앞서 받아온 텍스트를 이용해서 보여줍니다.
-        cell.textLabel?.text = receivedText[indexPath.row]
+        cell.textLabel?.text = textsFromUserDefaults[indexPath.row]
         return cell
     }
 }
@@ -125,11 +134,11 @@ extension SecondViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete { // 편집 스타일이 삭제인 경우
-            receivedText.remove(at: indexPath.row) // 데이터 배열에서 해당 인덱스의 항목을 삭제
+            textsFromUserDefaults.remove(at: indexPath.row) // 데이터 배열에서 해당 인덱스의 항목을 삭제
             // UserDefaults를 업데이트
-            UserDefaults.standard.set(receivedText, forKey: "texts")
+            UserDefaults.standard.set(textsFromUserDefaults, forKey: "texts")
             tableView.deleteRows(at: [indexPath], with: .fade) // 테이블 뷰에서 해당 셀을 삭제
-            print(receivedText)
+            print("\(textsFromUserDefaults) 삭제 후 데이터.")
         }
     }
 }

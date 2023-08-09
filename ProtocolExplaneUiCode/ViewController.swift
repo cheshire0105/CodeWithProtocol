@@ -58,9 +58,6 @@ struct ViewController_PreViews: PreviewProvider {
 #endif
 
 
-
-
-
 // MARK: - 프로토콜로 데이터를 주고 받을 수 있게 하나 생성
 // TabDelegate 프로토콜은 데이터를 전달하는 데 사용됩니다.
 // 데이터를 줘야 하는 곳에서 생성 합니다.
@@ -70,6 +67,8 @@ protocol TabDelegate : AnyObject {
 
 
 class ViewController: UIViewController {
+    
+    
     
     // 프로퍼티로 textField를 선언합니다.
     var textField: MyTextField!
@@ -100,7 +99,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        
         
         textField = MyTextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -156,18 +154,16 @@ class ViewController: UIViewController {
         // 이러면 tabAction의 함수의 파라미터 string이 텍스트필드에서 적은 텍스트가 됩니다.
         // "대리인(델리게이트)아, 이 편지(text)를 가져가서 원하는 대로 처리해줘!"
         if let text = textField.text {
+            
+            
+            // 위에서 만든 델리게이트 변수와 프로토콜 내부의 메서드를 통해서 데이터를 전달 합니다.
+            // 텍스트 필드의 텍스트를 프로토콜 메서드에 넣어주는 과정입니다.
             detaDelegate?.tabAction(value: text)
-            
-            // UserDefault에 저장 하는 방법 입니다.
-            // 새로운 저장공간을 만들어주고 그 저장 공간에 텍스트를 추가 해줍니다.
-            var storedText = UserDefaults.standard.array(forKey: "texts") as? [String] ?? []
-            storedText.append(text)
-            UserDefaults.standard.setValue(storedText, forKey: "texts")
-            print("storedText\(storedText)")
-            
             
             
         }
+        
+        
         
         // 네비게이션 컨트롤러를 사용해서 세컨드 뷰를 띄웁니다.
         // 코드로 구현 했기 때문에 네비게이션 컨트롤러는 앱 델리게이트에 있습니다.
